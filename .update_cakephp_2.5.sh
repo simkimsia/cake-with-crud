@@ -4,7 +4,7 @@
 rm -Rf cakephp
 
 # clone the latest cakephp master branch
-git clone git@github.com:cakephp/cakephp.git
+git clone  -b 2.5 git@github.com:cakephp/cakephp.git
 
 # remove the app, lib, index.php and plugins folders
 rm -Rf app
