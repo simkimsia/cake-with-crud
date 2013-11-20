@@ -19,7 +19,6 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 App::uses('Controller', 'Controller');
-App::uses('CrudControllerTrait', 'Crud.Lib');
 
 /**
  * Application Controller
@@ -31,15 +30,4 @@ App::uses('CrudControllerTrait', 'Crud.Lib');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-
-	use CrudControllerTrait;
-
-	public $components = array(
-		'Crud.Crud' => array(
-			'actions' => array(
-				'index', 'add', 'edit', 'view', 'delete'
-			)
-		)
-	);
-
 }

@@ -952,9 +952,11 @@ class Model extends Object implements CakeEventListener {
  * Example: Turn off the associated Model Support request,
  * to temporarily lighten the User model:
  *
- * `$this->User->unbindModel(array('hasMany' => array('Supportrequest')));`
+ * `$this->User->unbindModel(array('hasMany' => array('SupportRequest')));`
+ * Or alternatively:
+ * `$this->User->unbindModel(array('hasMany' => 'SupportRequest'));`
  *
- * unbound models that are not made permanent will reset with the next call to Model::find()
+ * Unbound models that are not made permanent will reset with the next call to Model::find()
  *
  * @param array $params Set of bindings to unbind (indexed by binding type)
  * @param boolean $reset Set to false to make the unbinding permanent
@@ -966,7 +968,7 @@ class Model extends Object implements CakeEventListener {
 			if ($reset === true && !isset($this->__backAssociation[$assoc])) {
 				$this->__backAssociation[$assoc] = $this->{$assoc};
 			}
-
+			$models = Hash::normalize((array)$models, false);
 			foreach ($models as $model) {
 				if ($reset === false && isset($this->__backAssociation[$assoc][$model])) {
 					unset($this->__backAssociation[$assoc][$model]);
@@ -1125,13 +1127,10 @@ class Model extends Object implements CakeEventListener {
 	public function setSource($tableName) {
 		$this->setDataSource($this->useDbConfig);
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
+		$db->cacheSources = ($this->cacheSources && $db->cacheSources);
 
 		if (method_exists($db, 'listSources')) {
-			$restore = $db->cacheSources;
-			$db->cacheSources = ($restore && $this->cacheSources);
 			$sources = $db->listSources();
-			$db->cacheSources = $restore;
-
 			if (is_array($sources) && !in_array(strtolower($this->tablePrefix . $tableName), array_map('strtolower', $sources))) {
 				throw new MissingTableException(array(
 					'table' => $this->tablePrefix . $tableName,

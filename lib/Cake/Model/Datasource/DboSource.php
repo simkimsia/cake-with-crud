@@ -1111,7 +1111,7 @@ class DboSource extends DataSource {
 						$db->queryAssociation($model, $linkModel, $type, $assoc, $assocData, $array, true, $resultSet, $model->recursive - 1, $stack);
 						unset($db);
 
-						if ($type === 'hasMany') {
+						if ($type === 'hasMany' || $type === 'hasAndBelongsToMany') {
 							$filtered[] = $assoc;
 						}
 					}
@@ -1137,6 +1137,9 @@ class DboSource extends DataSource {
  * @return array Array of results that have been filtered through $model->afterFind
  */
 	protected function _filterResults(&$results, Model $model, $filtered = array()) {
+		if (!is_array($results)) {
+			return array();
+		}
 		$current = reset($results);
 		if (!is_array($current)) {
 			return array();
@@ -1251,6 +1254,9 @@ class DboSource extends DataSource {
 				} else {
 					$fetch = null;
 				}
+				if ($queryData['callbacks'] === true || $queryData['callbacks'] === 'after') {
+					$this->_filterResults($fetch, $model);
+				}
 			}
 
 			$modelAlias = $model->alias;
@@ -1311,7 +1317,7 @@ class DboSource extends DataSource {
 					} else {
 						$this->_mergeAssociation($row, $fetch, $association, $type, $selfJoin);
 					}
-					if (isset($row[$association])) {
+					if (isset($row[$association]) && $type !== 'hasAndBelongsToMany') {
 						$row[$association] = $linkModel->afterFind($row[$association], false);
 					}
 				} else {
