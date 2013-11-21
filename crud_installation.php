@@ -37,6 +37,7 @@ file_put_contents($path_to_file,$file_contents);
 // copy and paste the Model, Controller and View files for Post
 copy('default_files/Controller/PostsController.php', 'app/Controller/PostsController.php');
 copy('default_files/Model/Post.php', 'app/Model/Post.php');
+copy('default_files/Schema/schema.sql', 'app/Config/Schema/schema.sql');
 recurse_copy('default_files/View/Posts', 'app/View/Posts');
 
 // add CakePlugin::loadAll(); to last line of bootstrap
